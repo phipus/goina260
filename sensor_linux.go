@@ -19,6 +19,7 @@ func New(addr uint8, bus int) (sensor S, err error) {
 
 func (s S) ReadData(readVoltage, readCurrent, readPower bool) (voltage, current, power float64, err error) {
 	var v uint16
+	var vs int16
 
 	if readVoltage {
 		v, err = s.i2c.ReadRegU16BE(REGBusVoltage)
@@ -30,17 +31,12 @@ func (s S) ReadData(readVoltage, readCurrent, readPower bool) (voltage, current,
 	}
 
 	if readCurrent {
-		v, err = s.i2c.ReadRegU16BE(REGCurrent)
+		vs, err = s.i2c.ReadRegS16BE(REGCurrent)
 		if err != nil {
 			return
 		}
 
-		//  Fix 2's complement
-		if v&(1<<15) > 0 {
-			v -= 65535
-		}
-
-		current = 0.00125 * float64(v) // 1.25mA/bit
+		current = 0.00125 * float64(vs) // 1.25mA/bit
 	}
 
 	if readPower {
