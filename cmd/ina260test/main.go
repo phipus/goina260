@@ -30,7 +30,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		log.Printf("%f V    %f W    %f A", voltage, current, power)
+		log.Printf("%f V    %f A    %f W", voltage, current, power)
 
 		time.Sleep(500 * time.Millisecond)
 	}
